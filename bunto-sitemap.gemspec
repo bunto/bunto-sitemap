@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bunto", ">= 1.0"
+  spec.add_development_dependency "bunto"
   spec.add_development_dependency "bunto-last-modified-at", "1.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rake"
