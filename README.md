@@ -12,6 +12,12 @@
 ```yml
 gems:
   - bunto-sitemap
+
+# optionally, to include non-bunto site files
+
+sitemap:
+  extensions:
+    - .pdf
 ```
 
 If all gem plugins have the same `priority`, they will be executed in the
