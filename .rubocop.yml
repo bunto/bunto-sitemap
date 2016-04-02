@@ -1,3 +1,5 @@
+# Rubocop
+
 inherit_gem:
   bunto: .rubocop.yml
 
