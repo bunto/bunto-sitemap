@@ -2,8 +2,7 @@
 set -e
 
 bundle exec rspec
-## DISABLE RUNNING spec/test_bunto-last-modified-at.rb AND rubocop
-## bundle exec rspec spec/test_bunto-last-modified-at.rb
-##if [ "$BUNTO_VERSION" = "1.0" ]; then
-##   bundle exec rubocop -S -D
-## fi
+bundle exec rspec spec/test_bunto-last-modified-at.rb
+if [ "$BUNTO_VERSION" = "3.0" ]; then
+  bundle exec rubocop -S -D
+fi

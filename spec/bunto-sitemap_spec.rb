@@ -73,14 +73,6 @@ describe(Bunto::BuntoSitemap) do
     end
   end
 
-  it "puts all the files with file_extensions into sitemap.xml" do
-    expect(contents).to match /<loc>http:\/\/example\.org\/assets\/foo\.pdf<\/loc>/
-  end
-
-  it "doesn't put files without file_extensions into sitemap.xml" do
-    expect(contents).to_not match /<loc>http:\/\/example\.org\/assets\/bar\.ps<\/loc>/
-  end
-
   it "generates the correct date for each of the posts" do
     expect(contents).to match /<lastmod>2014-03-04T00:00:00(-|\+)\d+:\d+<\/lastmod>/
     expect(contents).to match /<lastmod>2014-03-02T00:00:00(-|\+)\d+:\d+<\/lastmod>/
@@ -101,6 +93,10 @@ describe(Bunto::BuntoSitemap) do
     expect(contents).to match /\/some-subfolder\/htm\.htm/
   end
 
+  it "does include assets or any static files with .pdf extension" do
+    expect(contents).to match %r!/static_files/test.pdf!
+  end
+
   it "does not include posts that have set 'sitemap: false'" do
     expect(contents).not_to match /\/exclude-this-post\.html<\/loc>/
   end
@@ -114,7 +110,7 @@ describe(Bunto::BuntoSitemap) do
   end
 
   it "includes the correct number of items" do
-    expect(contents.scan(/(?=<url>)/).count).to eql 16
+    expect(contents.scan(/(?=<url>)/).count).to eql 19
   end
 
   context "with a baseurl" do
@@ -142,18 +138,21 @@ describe(Bunto::BuntoSitemap) do
     end
   end
 
-  context "with site url that needs URI encoding" do
+  context "with urls that needs URI encoding" do
     let(:config) do
-      Bunto.configuration(Bunto::Utils.deep_merge_hashes(overrides, {"url" => "http://has ümlaut.org"}))
+      Bunto.configuration(Bunto::Utils.deep_merge_hashes(overrides, {"url" => "http://ümlaut.example.org"}))
     end
 
     it "performs URI encoding of site url" do
-      expect(contents).to match /<loc>http:\/\/has%20%C3%BCmlaut\.org\/<\/loc>/
-      expect(contents).to match /<loc>http:\/\/has%20%C3%BCmlaut\.org\/some-subfolder\/this-is-a-subpage\.html<\/loc>/
-      expect(contents).to match /<loc>http:\/\/has%20%C3%BCmlaut\.org\/2014\/03\/04\/march-the-fourth\.html<\/loc>/
+      expect(contents).to match %r!<loc>http://xn--mlaut-jva.example.org/</loc>!
+      expect(contents).to match %r!<loc>http://xn--mlaut-jva.example.org/some-subfolder/this-is-a-subpage.html</loc>!
+      expect(contents).to match %r!<loc>http://xn--mlaut-jva.example.org/2014/03/04/march-the-fourth.html</loc>!
+      expect(contents).to match %r!<loc>http://xn--mlaut-jva.example.org/2016/04/01/%E9%94%99%E8%AF%AF.html</loc>!
+      expect(contents).to match %r!<loc>http://xn--mlaut-jva.example.org/2016/04/02/%E9%94%99%E8%AF%AF.html</loc>!
+      expect(contents).to match %r!<loc>http://xn--mlaut-jva.example.org/2016/04/03/%E9%94%99%E8%AF%AF.html</loc>!
     end
 
-    it "does not double-escape site url" do
+    it "does not double-escape urls" do
       expect(contents).to_not match /%25/
     end
   end

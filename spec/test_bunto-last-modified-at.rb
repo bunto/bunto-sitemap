@@ -1,4 +1,3 @@
-# NOTICE: This test was disabled in pull request #8!
 require 'spec_helper'
 require 'bunto-last-modified-at'
 

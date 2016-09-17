@@ -3,7 +3,7 @@
 Gem::Specification.new do |spec|
   spec.name        = "bunto-sitemap"
   spec.summary     = "Automatically generate a sitemap.xml for your Bunto site."
-  spec.version     = "3.0.0"
+  spec.version     = "4.0.0"
   spec.authors     = ["GitHub, Inc."]
   spec.email       = "support@github.com"
   spec.homepage    = "https://github.com/bunto/bunto-sitemap"
@@ -14,7 +14,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bunto", ">= 1.0"
+  spec.add_runtime_dependency "addressable", "~>2.4.0"
+
+  spec.add_development_dependency "bunto", ">= 2.0"
   spec.add_development_dependency "bunto-last-modified-at", "1.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rake"

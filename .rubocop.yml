@@ -1,6 +1,3 @@
-# Rubocop
-## NOTICE: Rubocop was disabled in pull request #8!
-
 inherit_gem:
   bunto: .rubocop.yml
 
