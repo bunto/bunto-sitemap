@@ -17,7 +17,6 @@ matrix:
   - env: BUNTO_VERSION=3.4.5
 env:
   matrix:
-  - BUNTO_VERSION=3.2.1
   - BUNTO_VERSION=3.4.5
 branches:
   only:
