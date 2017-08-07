@@ -88,6 +88,10 @@ describe(Bunto::BuntoSitemap) do
     expect(contents).not_to match /<loc>http:\/\/example\.org\/feeds\/atom\.xml<\/loc>/
   end
 
+  it "converts static index.html files to permalink version" do
+    expect(contents).to match /<loc>http:\/\/example\.org\/some-subfolder\/<\/loc>/
+  end
+
   it "does include assets or any static files with .xhtml and .htm extensions" do
     expect(contents).to match /\/some-subfolder\/xhtml\.xhtml/
     expect(contents).to match /\/some-subfolder\/htm\.htm/
@@ -95,6 +99,16 @@ describe(Bunto::BuntoSitemap) do
 
   it "does include assets or any static files with .pdf extension" do
     expect(contents).to match %r!/static_files/test.pdf!
+  end
+
+  it "does not include any static files named 404.html" do
+    expect(contents).not_to match %r!/static_files/404.html!
+  end
+
+  if Gem::Version.new(Bunto::VERSION) >= Gem::Version.new('3.4.5')
+    it "does not include any static files that have set 'sitemap: false'" do
+      expect(contents).not_to match %r!/static_files/excluded\.pdf!
+    end
   end
 
   it "does not include posts that have set 'sitemap: false'" do
@@ -105,12 +119,21 @@ describe(Bunto::BuntoSitemap) do
     expect(contents).not_to match /\/exclude-this-page\.html<\/loc>/
   end
 
+  it "does not include the 404 page" do
+    expect(contents).not_to match /\/404\.html<\/loc>/
+  end
+
   it "correctly formats timestamps of static files" do
     expect(contents).to match /\/this-is-a-subfile\.html<\/loc>\s+<lastmod>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(-|\+)\d{2}:\d{2}<\/lastmod>/
   end
 
   it "includes the correct number of items" do
-    expect(contents.scan(/(?=<url>)/).count).to eql 19
+    # static_files/excluded.pdf is excluded on Bunto 3.4.5 and above
+    if Gem::Version.new(Bunto::VERSION) >= Gem::Version.new('3.4.5')
+      expect(contents.scan(/(?=<url>)/).count).to eql 20
+    else
+      expect(contents.scan(/(?=<url>)/).count).to eql 21
+    end
   end
 
   context "with a baseurl" do
@@ -136,6 +159,11 @@ describe(Bunto::BuntoSitemap) do
       expect(contents).to match /<loc>http:\/\/example\.org\/bass\/2014\/03\/02\/march-the-second\.html<\/loc>/
       expect(contents).to match /<loc>http:\/\/example\.org\/bass\/2013\/12\/12\/dec-the-second\.html<\/loc>/
     end
+
+    it "adds baseurl to robots.txt" do
+      content = File.read(dest_dir("robots.txt"))
+      expect(content).to match("Sitemap: http://example.org/bass/sitemap.xml")
+    end
   end
 
   context "with urls that needs URI encoding" do
@@ -154,6 +182,22 @@ describe(Bunto::BuntoSitemap) do
 
     it "does not double-escape urls" do
       expect(contents).to_not match /%25/
+    end
+
+    context "readme" do
+      let(:contents) { File.read(dest_dir("robots.txt")) }
+
+      it "has no layout" do
+        expect(contents).not_to match(/\ATHIS IS MY LAYOUT/)
+      end
+
+      it "creates a sitemap.xml file" do
+        expect(File.exist?(dest_dir("robots.txt"))).to be_truthy
+      end
+
+      it "renders liquid" do
+        expect(contents).to match("Sitemap: http://xn--mlaut-jva.example.org/sitemap.xml")
+      end
     end
   end
 end

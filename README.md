@@ -22,6 +22,22 @@ those other gems if you *want* the sitemap to include the generated
 content, or *before* those other gems if you *don't want* the sitemap to
 include the generated content from the gems. (Programming is *hard*.)
 
+Because the sitemap is added to `site.pages`, you may have to modify any
+templates that iterate through all pages (for example, to build a menu of
+all of the site's content).
+
+## Note on Use with Github Pages Gem
+The Github Pages gem ignores all plugins included in the Gemfile. If you only include `bunto-sitemap` in the Gemfile without also including it in the `_config.yml` *the plugin will not work*. This can be confusing because the official Bunto docs state that plugins can be included in either the Gemfile or `_config.yml`.
+
+When building a site that uses the Github Pages gem, follow the instructions above and ensure that `bunto-sitemap` is listed in the `gems` array in `_config.yml`.
+
+## `<lastmod>` tag
+The `<lastmod>` tag in the `sitemap.xml` will reflect by priority:
+
+1.   The modified date of the file as reported by the filesystem if you have `bunto-last-modified-at` plugin installed (not compatible with Github Pages auto building)
+2.   A personnalised date if you add the variable `last_modified_at:` with a date in the Front Matter
+3.   The creation date of your post (correspondig to the `post.date` variable)
+
 ## Exclusions
 
 If you would like to exclude specific pages/posts from the sitemap set the
@@ -42,14 +58,14 @@ Use `script/console` to load a local IRB console with the Gem.
 1. `script/bootstrap`
 2. `script/cibuild`
 
+## Known Issues
+
+1. If the `sitemap.xml` doesn't generate in the `_site` folder, ensure `_config.yml` doesn't have `safe: true`. That prevents all plugins from working.
+2. If the `sitemap.xml` doesn't generate in the `_site` folder, ensure that you don't have a sitemap generator plugin in your `_plugin` folder.
+
 ## Contributing
 
 1. Fork the project
 2. Create a descriptively named feature branch
 3. Add your feature
 4. Submit a pull request
-
-## Issues
-
-1. If the `sitemap.xml` doesn't generate in the `_site` folder, ensure `_config.yml` doesn't have `safe: true`. That prevents all plugins from working.
-2. If the `sitemap.xml` doesn't generate in the `_site` folder, ensure that you don't have a sitemap generator plugin in your `_plugin` folder.

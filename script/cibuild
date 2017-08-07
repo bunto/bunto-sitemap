@@ -3,6 +3,6 @@ set -e
 
 bundle exec rspec
 bundle exec rspec spec/test_bunto-last-modified-at.rb
-if [ "$BUNTO_VERSION" = "3.2.1" ]; then
+if [ "$BUNTO_VERSION" = "3.4.5" ]; then
   bundle exec rubocop -S -D
 fi

@@ -1,21 +1,30 @@
-# Travis CI
-
 sudo: false
 language: ruby
 cache: bundler
 rvm:
-  - 2.3.0
-  - 2.2.5
+- 2.1
+- 2.2
+- 2.3
+- 2.4
 matrix:
   include:
-    - rvm: 2.3.1
-      env: BUNTO_VERSION=3.2.1
+  # GitHub Pages
+  - rvm: 2.4.0
+    env:
+    - BUNTO_VERSION=3.4.5
+    - GITHUB_PAGES=1 # Only set on one build in matrix
+  allow_failures:
+  - env: BUNTO_VERSION=3.4.5
 env:
   matrix:
-    - BUNTO_VERSION=3.2.1
+  - BUNTO_VERSION=3.2.1
+  - BUNTO_VERSION=3.4.5
 branches:
   only:
-    - master
+  - master
+  - /^v\d+\.\d+\.\d+/
+git:
+  depth: 1000
 before_script:
   - chmod a+x script/bootstrap
   - chmod a+x script/cibuild
